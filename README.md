@@ -9,7 +9,7 @@ Note that the path manipulation done here is with [Application.persistentDataPat
 
 ## References
 
-* [SharpZipLib](http://icsharpcode.github.io/SharpZipLib/) is used to unzip the downloaded file.
+* [SharpZipLib](http://icsharpcode.github.io/SharpZipLib/) is used to unzip the downloaded ZIP file.
 * See [Mongoose](https://code.google.com/p/mongoose/) if you need to quickly setup a web-server.
 
 ## License
