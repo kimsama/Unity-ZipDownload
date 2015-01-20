@@ -16,10 +16,23 @@ public class ZipTest : MonoBehaviour
 
     private bool isUnzipped = false;
 
+    delegate void OnFinish();
     // Use this for initialization
     void Start()
     {
-        StartCoroutine(Download(url, GetFileName(url)));
+        StartCoroutine(Download(url, GetFileName(url), OnDownloadDone));
+    }
+
+    void OnDownloadDone()
+    {
+        if (renderer != null)
+        {
+            // load unziped image file and assign it to the material's main texture.
+            string path = Application.persistentDataPath + "/" + imgFile;
+            renderer.material.mainTexture = LoadPNG(path);
+
+            isUnzipped = false;
+        }
     }
 
     /// <summary>
@@ -34,7 +47,7 @@ public class ZipTest : MonoBehaviour
         return file;
     }
 
-    IEnumerator Download(string url, string file)
+    IEnumerator Download(string url, string file, OnFinish onFinish)
     {
         WWW www = new WWW(url);
 
@@ -71,10 +84,11 @@ public class ZipTest : MonoBehaviour
 
                     if (fileName != String.Empty)
                     {
-                        string filename = docPath.Substring(0, docPath.Length - 8);
-                        filename += theEntry.Name;
-                        Debug.Log("Unzipping: " + filename);
-                        using (FileStream streamWriter = File.Create(filename))
+                        string filepath = Path.GetDirectoryName(docPath);
+                        filepath += "/";
+                        filepath += theEntry.Name;
+                        Debug.Log("Unzipping: " + filepath);
+                        using (FileStream streamWriter = File.Create(filepath))
                         {
                             int size = 2048;
                             byte[] fdata = new byte[2048];
@@ -96,24 +110,13 @@ public class ZipTest : MonoBehaviour
                 isUnzipped = true;
             }
 
+            if (onFinish != null)
+            {
+                onFinish();
+            }
+
             // delete zip file.
             System.IO.File.Delete(docPath);
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (isUnzipped)
-        {
-            if (renderer != null)
-            {
-                // load unziped image file and assign it to the material's main texture.
-                string path = Application.persistentDataPath + "/" + imgFile;
-                renderer.material.mainTexture = LoadPNG(path);
-
-                isUnzipped = false;
-            }
         }
     }
 
