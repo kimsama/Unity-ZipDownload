@@ -6,7 +6,8 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 
 /// <summary>
-/// 
+/// Downloading zipped image files and do unzip under persistence data path 
+/// then load the specified image file.
 /// </summary>
 public class ZipTest : MonoBehaviour
 {
@@ -17,17 +18,17 @@ public class ZipTest : MonoBehaviour
     private bool isUnzipped = false;
 
     delegate void OnFinish();
-    // Use this for initialization
+
     void Start()
     {
-        StartCoroutine(Download(url, GetFileName(url), OnDownloadDone));
+        StartCoroutine(Download(url, OnDownloadDone));
     }
 
     void OnDownloadDone()
     {
         if (renderer != null)
         {
-            // load unziped image file and assign it to the material's main texture.
+            // load unzipped image file and assign it to the material's main texture.
             string path = Application.persistentDataPath + "/" + imgFile;
             renderer.material.mainTexture = LoadPNG(path);
 
@@ -47,7 +48,10 @@ public class ZipTest : MonoBehaviour
         return file;
     }
 
-    IEnumerator Download(string url, string file, OnFinish onFinish)
+    /// <summary>
+    /// Download ZIP file from the given URL and do calling passed delegate.
+    /// </summary>
+    IEnumerator Download(string url, OnFinish onFinish)
     {
         WWW www = new WWW(url);
 
@@ -55,6 +59,8 @@ public class ZipTest : MonoBehaviour
 
         if (www.isDone && !isUnzipped)
         {
+            string file = GetFileName(url);
+
             Debug.Log("Downloading of " + file + " is completed.");
 
             byte[] data = www.bytes;
@@ -84,6 +90,7 @@ public class ZipTest : MonoBehaviour
 
                     if (fileName != String.Empty)
                     {
+                        // retrieve directory name only from persistence data path.
                         string filepath = Path.GetDirectoryName(docPath);
                         filepath += "/";
                         filepath += theEntry.Name;
