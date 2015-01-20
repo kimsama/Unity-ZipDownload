@@ -7,6 +7,11 @@ After finishing unzip, it loads one of image file and assign it to a mesh render
 
 Note that the path manipulation done here is with [Application.persistentDataPath](http://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html), so it works for all known platforms of Unity3D.
 
+There are two samples.
+
+* SimpleZipDownloader - It downloads a zip file via coroutine. Hard to to handle error.
+* UniRxZipDownloader - It downloads zip file via [UniRx](https://github.com/neuecc/UniRx). Asynchronous, easy for handling errors.
+
 ## References
 
 * [SharpZipLib](http://icsharpcode.github.io/SharpZipLib/) is used to unzip the downloaded ZIP file.
