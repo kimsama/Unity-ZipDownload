@@ -14,9 +14,7 @@ public class ZipFile
     /// </summary>
     public static void UnZip(string filePath, byte[] data)
     {
-        System.IO.File.WriteAllBytes(filePath, data);
-
-        using (ZipInputStream s = new ZipInputStream(File.OpenRead(filePath)))
+        using (ZipInputStream s = new ZipInputStream(new MemoryStream(data)))
         {
             ZipEntry theEntry;
             while ((theEntry = s.GetNextEntry()) != null)
